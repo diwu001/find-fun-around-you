@@ -1,0 +1,36 @@
+html, body, #map-canvas {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  position: relative;
+  font-size: 14px;
+}
+
+.clear {
+  clear: both; 
+}
+
+.searchbar {
+  position: absolute;
+  top: 30px;
+  left: 10px;
+  background-color: rgba(255,255,255, 0.9);
+  border: 1px solid gray;
+  padding: 15px 10px;
+}
+
+.searchbar input {
+  width: 190px;
+  padding: 5px;
+}
+
+#submit {
+  width: 80px;
+  padding: 7px;
+  border: none;
+  background: gray;
+  color: white;
+}
