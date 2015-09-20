@@ -2,9 +2,11 @@
 
 function findFunViewModel() {
   var self = this;
-  var map, city; 
+  var map, city, infowindow; 
   var inputLan, inputLon;   
- 
+  this.meetupEvents = ko.observableArray([]); //initial list of events
+  this.mapMarkers = ko.observableArray([]);  //holds all map markers
+    
   // AutoComplete input of city and state   
   this.doAutoComplete = function() {
      var inputLocation = new google.maps.places.Autocomplete(
@@ -28,7 +30,8 @@ function findFunViewModel() {
  this.processLocationSearch = function() {
     var radius = 30;
     var combine = "lat=" + inputLan + "&lon=" + inputLon + "&radius=" + radius; 
-
+    clearMarkers();
+    self.meetupEvents([]);
     getMeetups(combine);
   };
 
@@ -60,6 +63,8 @@ function findFunViewModel() {
        google.maps.event.trigger(map, "resize");
        map.setCenter(center); 
     });
+    
+    infowindow = new google.maps.InfoWindow({maxWidth: 300});
   }
    
   // Use API to get events data and store the info as objects in an array
@@ -76,9 +81,36 @@ function findFunViewModel() {
         var len = data.data.length;
         map.panTo({lat: data.data[0].lat, lng: data.data[0].lon});
         for(var i = 0; i < len; i++) {
-          var info = data.data[i];
-          console.log(info);    
+              var info = data.data[i];
+              //console.log(info);
+
+              if (info === undefined || info.name == undefined || info.lat == undefined || info.lon == undefined
+                 || info.link == undefined || info.group_photo == undefined|| info.city == undefined 
+                 || info.state == undefined || info.members == undefined|| info.category == undefined || info.who == undefined) 
+                  continue;
+              var muName = info.name;
+              var muLat = info.lat;
+              var muLon = info.lon;
+              var muLink = info.link;
+              var muImg = info.group_photo.photo_link;
+              var mucity = info.city;
+              var mustate = info.state;
+              var mumembers = info.members;
+              var mutag = info.category.shortname;
+              var mugroup = info.who;
+             
+              self.meetupEvents.push({
+                eventName: muName, 
+                eventLat: muLat, 
+                eventLon: muLon, 
+                eventLink: muLink, 
+                eventImg: muImg,               
+                eventAddress: mucity + ", " + mustate,
+                eventTag: mutag,
+                eventGroup: mugroup
+              });
         }
+        mapMarkers(self.meetupEvents());
       },
       error: function() {
         self.eventStatus('Oops, something was wrong, please refresh and try again.');
@@ -86,7 +118,54 @@ function findFunViewModel() {
       }
     });
   }
+  // Create and place markers and info windows on the map based on data from API
+  function mapMarkers(array) {
+    $.each(array, function(index, value) {
+      var latitude = value.eventLat,
+          longitude = value.eventLon,
+          geoLoc = new google.maps.LatLng(latitude, longitude),
+          thisEvent = value.eventName;
+
+      var infoContentString = '<div id="infowindow">' +
+      '<img src="' + value.eventImg + '">' +
+      '<h4 class = "infoName">' + value.eventName + '</h4>' +
+      '<div class = "clear"></div>' +
+      '<p class = "infoAddress">' + value.eventAddress + '</p>' +
+      '<p>Group: ' + value.eventGroup + '</p>' +
+      '<p><a href="' + value.eventLink + '" target="_blank">Click to view event details</a></p>' +
+      '</div>';
+
+      // Custormize marker
+      var iconBase = 'img/meetup.png';
+      var marker = new google.maps.Marker({
+        position: geoLoc,
+        title: thisEvent,
+        map: map,
+        icon: iconBase
+      });
+
+      self.mapMarkers.push({marker: marker, content: infoContentString});
+
+      //generate infowindows for each event
+      google.maps.event.addListener(marker, 'click', function() {
+         infowindow.setContent(infoContentString);
+         map.setZoom(12);
+         map.setCenter(marker.position);
+         infowindow.open(map, marker);
+         map.panBy(0, -150);
+       });
+    });
+  }
     
+
+  // Clear markers from map and array
+  function clearMarkers() {
+    $.each(self.mapMarkers(), function(key, value) {
+      value.marker.setMap(null);
+    });
+    self.mapMarkers([]);
+  }
+
   mapInitialize();
 }
 
