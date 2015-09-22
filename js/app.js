@@ -45,7 +45,7 @@ function findFunViewModel() {
   this.processLocationSearch = function() {
     /* Find the events within 30 miles range of the input latitude and longtitude */
     var radius = 30;
-    var location = "lat=" + inputLan + "&lon=" + inputLon + "&radius=" + radius;
+    var location = 'lat=' + inputLan + '&lon=' + inputLon + '&radius=' + radius;
 
     /* Update search status to be "Searching" */
     self.searchStatus('');
@@ -62,7 +62,7 @@ function findFunViewModel() {
 
   /* Compare search keyword against the event tag of all events. Return a filtered list and markers */
   this.filterResults = function() {
-    /* Convert filter keyword to lowercase */
+    /* Convert filter keyword to lowercase in order to allow the keyword to be case insensitive */
     var searchWord = self.filterKeyword().toLowerCase();
     var array = self.meetupEvents();
     /* If the search word is empty, return */
@@ -112,14 +112,14 @@ function findFunViewModel() {
     $('#map-canvas').html('We had trouble loading the Google Map. Please refresh your browser and try again.');
   }, 9000);
 
-  /* format is the style of infobox */
+  /* The format variable defined the style of infobox */
   var format = {
-    width: "200px",
+    width: '200px',
     boxStyle: {
-      backgroundColor: "rgba(255,255,255,0.9)",
+      backgroundColor: 'rgba(255,255,255,0.9)',
       opacity: 0.9,
-      borderRadius: "6px",
-      padding: "12px",
+      borderRadius: '6px',
+      padding: '12px',
     },
   };
 
@@ -141,9 +141,9 @@ function findFunViewModel() {
     });
     clearTimeout(self.mapRequestTimeout);
 
-    google.maps.event.addDomListener(window, "resize", function() {
+    google.maps.event.addDomListener(window, 'resize', function() {
       var center = map.getCenter();
-      google.maps.event.trigger(map, "resize");
+      google.maps.event.trigger(map, 'resize');
       map.setCenter(center); 
     });
 
@@ -153,9 +153,9 @@ function findFunViewModel() {
 
   /* Use API to get events data and store the info as objects in an array */
   function getMeetups(location) {
-    var meetupUrl = "https://api.meetup.com/find/groups?key=6f4c634b253677752b591d6a67327&";
+    var meetupUrl = 'https://api.meetup.com/find/groups?key=6f4c634b253677752b591d6a67327&';
     /* Request for searching results to be sorted by memebrs number*/
-    var order = "&order=members";
+    var order = '&order=members';
     /* Generate the query string */
     var query = meetupUrl + location + order;
 
