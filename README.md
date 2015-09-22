@@ -8,7 +8,7 @@ In this project, a single-page map-based application is developed using Knockout
 
 - Enter the location you want to search, then click 'Search'. All meetup events around that location will showup. 
 
-- Enter the event type, such as 'Tech' or 'Sport'. Then click 'Filter', the specific type of events can be filtered. 
+- Enter the event type, such as 'Tech', 'Food' or 'Sport'. Then click 'Filter', the specific type of events can be filtered. 
 
 - Click one of the search result or click the marker on the map will open an infowindow provide detailed information about that event. 
 

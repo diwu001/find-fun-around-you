@@ -24,13 +24,14 @@ body {
   width: 190px;
   padding: 5px;
   margin-left: 20px;
+  border-radius: 2px;
 }
 
 #searchStatus {
-   margin-left: 20px;
-   font-size: 14px;
-   font-style: italic;
-   color: #7b7b7b;
+  margin-left: 20px;
+  font-size: 14px;
+  font-style: italic;
+  color: #7b7b7b;
 }
 
 #submitSearch {
@@ -39,6 +40,7 @@ body {
   border: none;
   background: #3878c7;
   color: white;
+  border-radius: 2px;
 }
 
 #submitFilter {
@@ -47,15 +49,16 @@ body {
   border: none;
   background: #fa9e25;
   color: white;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px;
+  -webkit-appearance: none;
+  width: 7px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #3878c7;
+  background-color: #3878c7;
 }
 
 .searchbtn, .locbtn {
@@ -111,10 +114,10 @@ body {
   color: gray;
   cursor: pointer;
   padding-left: 20px;
-  padding-top: 15px;  
+  padding-top: 15px;
 }
 
-.status {
+.eventStatus {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   font-size: 18px;
@@ -122,18 +125,14 @@ body {
   margin-left: 20px;
 }
 
-.waiting {
-  text-align: center;
-}
-
-#results-list {
+#resultsList {
   padding: 0;
   list-style-type: none;
   overflow: auto;
   max-height: 460px;
 }
 
-.results-list-li {
+.resultsListItem {
   border-top: 1px solid #e0e0e0;
   padding: 0 24px;
   cursor: pointer;
@@ -176,52 +175,54 @@ body {
 
 .infoLink {
   text-decoration: none;
-  font-color: #3878c7;
+  color: #3878c7;
   width: 176px;
   font-size: 13px;
 }
 
 @media screen and (max-width: 700px) {
-    .searchbar {
-      width: 300px;
-    }
-    
-    .searchbarInput {
-      width: 150px;
-    }
-    .resultsAddress, .resultsGroup {
-        display: none;
-    }
-    .resultsTitle {
-      font-size: 14px;
-      color: dimgray;
-    }
-    
-    #results-list {
-      max-height: 340px;
-    }
+  .searchbar {
+    width: 300px;
+  }
+
+  .searchbarInput {
+    width: 150px;
+  }
+
+  .resultsAddress, .resultsGroup {
+    display: none;
+  }
+
+  .resultsTitle {
+    font-size: 14px;
+    color: dimgray;
+  }
+
+  #resultsList {
+    max-height: 340px;
+  }
 }
 
 @media screen and (max-width: 460px), screen and (max-height: 600px) {
-    .infoContent{
-        display: none;
-    }
-    
-    .infoName {
-        width: 80px;    
-        font-size: 12px;
-    }
-    
-    .infoLink {
-      font-size: 12px;   
-    }
-    
-    .infoImg {
-        width: 75px;
-        height: 75px;
-    }
-    
-    #results-list {
-      max-height: 120px;
-    }
+  .infoContent{
+    display: none;
+  }
+
+  .infoName {
+    width: 80px;
+    font-size: 12px;
+  }
+
+  .infoLink {
+    font-size: 12px; 
+  }
+
+  .infoImg {
+    width: 75px;
+    height: 75px;
+  }
+
+  #resultsList {
+    max-height: 120px;
+  }
 }

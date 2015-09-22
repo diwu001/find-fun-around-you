@@ -2,80 +2,94 @@
 
 function findFunViewModel() {
   var self = this;
-  var map, city, infobox; 
-  var inputLan, inputLon;   
-  this.meetupEvents = ko.observableArray([]); 
-  this.filteredList = ko.observableArray([]); 
-  this.mapMarkers = ko.observableArray([]);  
-  this.eventStatus = ko.observable('');
-  this.searchStatus = ko.observable();
-  this.searchLocation = ko.observable('');
+  var map, city, infobox;
+  var inputLan, inputLon;
+  /* meetupEvents variable stores all meetup events searched from Meetup API */
+  this.meetupEvents = ko.observableArray([]);
+  /* filteredList variable stores the filter results based on the filter keyword */
+  this.filteredList = ko.observableArray([]);
+  /* filterKeyword variable is the keyword in the input box */
   this.filterKeyword = ko.observable('');
-    
+  /* mapMarkers variable stores all the markers */
+  this.mapMarkers = ko.observableArray([]);
+  /* searchStatus variable is the status for searching events */
+  this.searchStatus = ko.observable('');
+  /* eventStatus variable is the status for searching results of events */
+  this.eventStatus = ko.observable('');
+  
+  /* numEvents variable is calculated by the total number of filter results */
   this.numEvents = ko.computed(function() {
     return self.filteredList().length;
-  });  
-    
-  //Holds value for list togglings
+  });
+
+  /* toggleSymbol variable is the status of toggling for hiding and showing searching results */
   this.toggleSymbol = ko.observable('Hide Results');
-    
-  // AutoComplete input of city and state   
+
+  /* AutoComplete input location by Google Map API */
   this.doAutoComplete = function() {
     var inputLocation = new google.maps.places.Autocomplete(
-      (document.getElementById('autocomplete')),
-      { types: ['geocode'] });
+      document.getElementById('autocomplete'),
+      {types: ['geocode']});
 
+    /* Transform the input location to latitude and longitude */
     google.maps.event.addListener(inputLocation, 'place_changed', function() {
       var place = inputLocation.getPlace();
       inputLan= place.geometry.location.lat();
-      inputLon = place.geometry.location.lng();  
+      inputLon = place.geometry.location.lng();
     });
-     
-    /* if you use the event binding to capture the keypress event of an input tag, the browser will only call your handler function and will not add  
-    the value of the key to the input element’s value. if you do want to let the default action proceed, just return true from your event handler   
-    function.*/
+
     return true;
   };
 
- 
-  // Handle the input given when user searches for events in a location
+  /* When user searches for events at a location, generate the variable combine and query using Meetup API */
   this.processLocationSearch = function() {
+    /* Find the events within 30 miles range of the input latitude and longtitude */
+    var radius = 30;
+    var location = "lat=" + inputLan + "&lon=" + inputLon + "&radius=" + radius;
+
+    /* Update search status to be "Searching" */
     self.searchStatus('');
     self.searchStatus('Searching...');
-    
-    var radius = 30;
-    var combine = "lat=" + inputLan + "&lon=" + inputLon + "&radius=" + radius; 
+
+    /* Clear all marker and empty meetupEvents and filteredList array */
     clearMarkers();
     self.meetupEvents([]);
     self.filteredList([]);
-    getMeetups(combine);
+
+    /* Use the variable location to send request to Meetup API */
+    getMeetups(location);
   };
 
-  //Compare search keyword against event tag of all events.  Return a filtered list and map markers of request.
+  /* Compare search keyword against the event tag of all events. Return a filtered list and markers */
   this.filterResults = function() {
+    /* Convert filter keyword to lowercase */
     var searchWord = self.filterKeyword().toLowerCase();
     var array = self.meetupEvents();
+    /* If the search word is empty, return */
     if(!searchWord) {
       return;
     } else {
-      //first clear out all entries in the filteredList array
+      /* empty the filteredList array */
       self.filteredList([]);
-      //Loop through the meetupEvents array and see if the search keyword matches 
-      //with event tag in the list, if so push that object to the filteredList 
-      //array and place the marker on the map.
 
-      for(var i=0; i < array.length; i++) {
+      /* Traverse the meetupEvents array, if the search word can matche the current event tag, 
+       * push that event object to the filteredList array and place the marker on the map. 
+       */
+      for(var i = 0; i < array.length; i++) {
         if(array[i].eventTag.toLowerCase().indexOf(searchWord) != -1) {
           self.mapMarkers()[i].marker.setMap(map);
           self.filteredList.push(array[i]);
         } else self.mapMarkers()[i].marker.setMap(null);
       }
+
+      /* update event status with the number of total events found */
       self.eventStatus(self.numEvents() + ' events found for ' + self.filterKeyword());
     }
   };
-    
-  //Clear keyword from filter and show all active events in current location again.
+
+  /* Clear keyword from filter and show all events in the current location */
   this.clearFilter = function() {
+    /* update filteredList to contain all events */
     self.filteredList(self.meetupEvents());
     self.eventStatus(self.numEvents() + ' events found...');
     self.filterKeyword('');
@@ -83,8 +97,8 @@ function findFunViewModel() {
       self.mapMarkers()[i].marker.setMap(map);
     }
   };
-    
-  //toggles the list view
+
+  /* toggles the list view of the searching results */
   this.listToggle = function() {
     if(self.toggleSymbol() === 'Hide Results') {
       self.toggleSymbol('Show Results');
@@ -92,14 +106,14 @@ function findFunViewModel() {
       self.toggleSymbol('Hide Results');
     }
   };
-    
+
+  /* Map request timeout handler */
   this.mapRequestTimeout = setTimeout(function() {
-    $('#map-canvas').html('We had trouble loading Google Maps. Please refresh your browser and try again.');
+    $('#map-canvas').html('We had trouble loading the Google Map. Please refresh your browser and try again.');
   }, 9000);
 
-    
+  /* format is the style of infobox */
   var format = {
-    disableAutoPan: true,
     width: "200px",
     boxStyle: {
       backgroundColor: "rgba(255,255,255,0.9)",
@@ -108,23 +122,23 @@ function findFunViewModel() {
       padding: "12px",
     },
   };
-    
-  // Initialize Google map
+
+  /* Initialize Google map */
   function mapInitialize() {
     city = new google.maps.LatLng(37.70, -122.10);
     map = new google.maps.Map(document.getElementById('map-canvas'), {
-          center: city,
-          zoom: 10,
-          zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_CENTER,
-            style: google.maps.ZoomControlStyle.SMALL
-          },
-          streetViewControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM
-            },
-          mapTypeControl: false,
-          panControl: false
-        });
+      center: city,
+      zoom: 10,
+      zoomControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_CENTER,
+        style: google.maps.ZoomControlStyle.SMALL
+      },
+      streetViewControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_BOTTOM
+      },
+      mapTypeControl: false,
+      panControl: false
+    });
     clearTimeout(self.mapRequestTimeout);
 
     google.maps.event.addDomListener(window, "resize", function() {
@@ -133,15 +147,18 @@ function findFunViewModel() {
       map.setCenter(center); 
     });
 
+    /* Definde infobox with specific format */
     infobox = new InfoBox(format);
   }
-   
-  // Use API to get events data and store the info as objects in an array
+
+  /* Use API to get events data and store the info as objects in an array */
   function getMeetups(location) {
     var meetupUrl = "https://api.meetup.com/find/groups?key=6f4c634b253677752b591d6a67327&";
-    var order = "&order=members";   // sort by number of members
+    /* Request for searching results to be sorted by memebrs number*/
+    var order = "&order=members";
+    /* Generate the query string */
     var query = meetupUrl + location + order;
-      
+
     $.ajax({
       url: query,
       dataType: 'jsonp',
@@ -151,44 +168,38 @@ function findFunViewModel() {
         for(var i = 0; i < len; i++) {
           var info = data.data[i];
 
-          if (info === undefined || info.name == undefined || info.lat == undefined || info.lon == undefined
-              || info.link == undefined || info.group_photo == undefined|| info.city == undefined 
-              || info.state == undefined || info.members == undefined|| info.category == undefined || info.who == undefined) 
+          /* If some attribute of an event object is missing, it won't be added to searching result */
+          if (info === undefined || info.name == undefined || info.lat == undefined ||
+            info.lon == undefined || info.link == undefined || info.group_photo == undefined ||
+            info.city == undefined || info.state == undefined || info.members == undefined||
+            info.category == undefined || info.who == undefined)
             continue;
-          var muName = info.name;
-          var muLat = info.lat;
-          var muLon = info.lon;
-          var muLink = info.link;
-          var muImg = info.group_photo.photo_link;
-          var mucity = info.city;
-          var mustate = info.state;
-          var mumembers = info.members;
-          var mutag = info.category.shortname;
-          var mugroup = info.who;
-             
+
           self.meetupEvents.push({
-            eventName: muName, 
-            eventLat: muLat, 
-            eventLon: muLon, 
-            eventLink: muLink, 
-            eventImg: muImg,               
-            eventAddress: mucity + ", " + mustate,
-            eventTag: mutag,
-            eventGroup: mugroup
+            eventName: info.name,
+            eventLat: info.lat,
+            eventLon: info.lon,
+            eventLink: info.link,
+            eventImg: info.group_photo.photo_link,
+            eventAddress: info.city + ", " + info.state,
+            eventTag: info.category.shortname,
+            eventGroup: info.who
           });
         }
+
+        /* Show the search results list */
         $('#searchResults').removeClass('hide');
         self.filteredList(self.meetupEvents());
         mapMarkers(self.meetupEvents());
         self.searchStatus('');
       },
       error: function() {
-        self.eventStatus('Oops, something was wrong, please refresh and try again.');
+        self.eventStatus('Error! Please refresh and try again.');
       }
     });
   }
-    
-  // Create and place markers and info windows on the map based on data from API
+
+  /* Create markers and info box on the map based on data from API */
   function mapMarkers(array) {
     $.each(array, function(index, value) {
       var latitude = value.eventLat,
@@ -196,6 +207,7 @@ function findFunViewModel() {
           geoLoc = new google.maps.LatLng(latitude, longitude),
           thisEvent = value.eventName;
 
+     /* Generate the content for infobox */
       var infoContentString = '<div>' +
       '<p class="infoName">' + value.eventName + '</p>' +
       '<img src="' + value.eventImg + '" class="infoImg">' +
@@ -204,7 +216,7 @@ function findFunViewModel() {
       '<p><a class="infoLink" href="' + value.eventLink + '" target="_blank">Click to view details</a></p>' +
       '</div>';
 
-      // Custormize marker
+      /* Custormize map marker */
       var icon = 'img/meetupRed.png';
       var marker = new google.maps.Marker({
         position: geoLoc,
@@ -216,24 +228,22 @@ function findFunViewModel() {
       self.mapMarkers.push({marker: marker, content: infoContentString});
       self.eventStatus(self.numEvents() + ' events found...');
 
-      //generate infobox for each event
+      /* generate infobox for each event */
       google.maps.event.addListener(marker, 'click', function() {
-        self.searchStatus('');
         infobox.setContent(infoContentString);
-        infobox.setOptions(format);	
         map.setZoom(12);
         map.setCenter(marker.position);
         infobox.open(map, marker);
-        map.panBy(0, -150);
+        map.panBy(0, 150);
 
-        // Add bounce animation to the clicked marker
+        /* Add bounce animation to the clicked marker */
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function(){ marker.setAnimation(null); }, 2000);
       });
     });
   }
-  
-  // When an event on the list is clicked, go to corresponding marker and open its info window.
+
+  /* When an event on the list is clicked, open the infobox for that event on the map */
   this.goToMarker = function(clickedEvent) {
     var clickedEventName = clickedEvent.eventName;
     for(var key in self.mapMarkers()) {
@@ -241,31 +251,19 @@ function findFunViewModel() {
         map.panTo(self.mapMarkers()[key].marker.position);
         map.setZoom(14);
         infobox.setContent(self.mapMarkers()[key].content);
-        infobox.setOptions(format);	
         infobox.open(map, self.mapMarkers()[key].marker);
-        map.panBy(0, -150);
-        self.searchStatus('');        
+        map.panBy(0, 150);
       }
     }
-  };  
-    
-  // Clear markers from map and array
+  };
+
+  /* Clear markers from map and empty the mapMarkers array */
   function clearMarkers() {
     $.each(self.mapMarkers(), function(key, value) {
       value.marker.setMap(null);
     });
     self.mapMarkers([]);
   }
-  
-  this.searchBarShow = ko.observable(true);
-    
-  this.searchToggle = function() {
-    if(self.searchBarShow() === true) {
-      self.searchBarShow(false);
-    } else {
-      self.searchBarShow(true);
-    }
-  };
 
   mapInitialize();
 }
