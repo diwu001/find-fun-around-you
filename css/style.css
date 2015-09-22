@@ -17,7 +17,7 @@ body {
   border: 1px solid rgba(0,0,0,.3);
   border-radius: 5px;
   padding: 15px 10px;
-  width: 25%;
+  width: 350px;
 }
 
 .searchbarInput {
@@ -130,7 +130,7 @@ body {
   padding: 0;
   list-style-type: none;
   overflow: auto;
-  max-height: 450px;
+  max-height: 460px;
 }
 
 .results-list-li {
@@ -139,7 +139,7 @@ body {
   cursor: pointer;
 }
 
-.results-list-li-h4 {
+.resultsTitle {
   margin-bottom: 0;
   color: #3878c7;
 }
@@ -166,7 +166,6 @@ body {
   width: 176px;
   font-size: 14px;
   margin-top: 15px;
-
 }
 
 .infoContent{
@@ -180,4 +179,49 @@ body {
   font-color: #3878c7;
   width: 176px;
   font-size: 13px;
+}
+
+@media screen and (max-width: 700px) {
+    .searchbar {
+      width: 300px;
+    }
+    
+    .searchbarInput {
+      width: 150px;
+    }
+    .resultsAddress, .resultsGroup {
+        display: none;
+    }
+    .resultsTitle {
+      font-size: 14px;
+      color: dimgray;
+    }
+    
+    #results-list {
+      max-height: 340px;
+    }
+}
+
+@media screen and (max-width: 460px), screen and (max-height: 600px) {
+    .infoContent{
+        display: none;
+    }
+    
+    .infoName {
+        width: 80px;    
+        font-size: 12px;
+    }
+    
+    .infoLink {
+      font-size: 12px;   
+    }
+    
+    .infoImg {
+        width: 75px;
+        height: 75px;
+    }
+    
+    #results-list {
+      max-height: 120px;
+    }
 }

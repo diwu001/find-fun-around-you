@@ -32,7 +32,7 @@
       <p class="waiting"></p>
       <ul id="results-list" data-bind="visible: toggleSymbol() === 'Hide Results', foreach: filteredList">
         <li data-bind="click: $parent.goToMarker" class="results-list-li">
-          <h4 data-bind="text: eventName" class="results-list-li-h4"></h4>
+          <h4 data-bind="text: eventName" class="resultsTitle"></h4>
           <p class="address resultsAddress" data-bind="html: eventAddress"></p>
           <p class="resultsGroup">Group: <span data-bind="text: eventGroup"></span></p>
         </li>
