@@ -13,7 +13,7 @@
     <div class="searchbar">
       <div>
         <form data-bind="submit: processLocationSearch">
-          <input type="text" placeholder="Find events in your area" data-bind="selectOnFocus: true, event: {keypress: doAutoComplete}" id="autocomplete" class="searchbarInput">
+          <input type="text" placeholder="Enter a city and state" data-bind="selectOnFocus: true, event: {keypress: checkKey}" id="autocomplete" class="searchbarInput">
           <input type="submit" value="Search" id="submitSearch">
           <p id="searchStatus" data-bind="text: searchStatus"></p>
         </form>
@@ -40,8 +40,6 @@
       </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
-    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
   </body>
