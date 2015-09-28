@@ -4,7 +4,7 @@ In this project, a single-page map-based application is developed using Knockout
 
 # How to run the project
 
-- Open index.html by browser. 
+- Visit http://diwu001.github.io/projects/find-fun-around-you/index.html by browser. 
 
 - Enter the location you want to search, then click 'Search'. All meetup events around that location will showup. 
 
@@ -21,4 +21,4 @@ Javascipt, jQuery, KnockoutJS, Google Map API, Meetup API, AJAX, JSON, HTML5, CS
   
 
 Author: Tina D. Wu  
-Date: 09 / 21 / 2015
+Date: 09 / 28 / 2015
