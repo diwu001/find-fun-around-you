@@ -88,28 +88,28 @@ function findFunViewModel() {
 
   var self = this;
   /* meetupEvents variable stores all meetup events searched from Meetup API */
-  this.meetupEvents = ko.observableArray([]);
+  self.meetupEvents = ko.observableArray([]);
   /* filteredList variable stores the filter results based on the filter keyword */
-  this.filteredList = ko.observableArray([]);
+  self.filteredList = ko.observableArray([]);
   /* filterKeyword variable is the keyword in the input box */
-  this.filterKeyword = ko.observable('');
+  self.filterKeyword = ko.observable('');
   /* mapMarkers variable stores all the markers */
-  this.mapMarkers = ko.observableArray([]);
+  self.mapMarkers = ko.observableArray([]);
   /* searchStatus variable is the status for searching events */
-  this.searchStatus = ko.observable('');
+  self.searchStatus = ko.observable('');
   /* eventStatus variable is the status for searching results of events */
-  this.eventStatus = ko.observable('');
+  self.eventStatus = ko.observable('');
 
   /* numEvents variable is calculated by the total number of filter results */
-  this.numEvents = ko.computed(function() {
+  self.numEvents = ko.computed(function() {
     return self.filteredList().length;
   });
 
   /* toggleSymbol variable is the status of toggling for hiding and showing searching results */
-  this.toggleSymbol = ko.observable('Hide Results');
+  self.toggleSymbol = ko.observable('Hide Results');
 
   /* If the "Enter" key is pressed, invoke searchLocation() */
-  this.checkKey = function(data, e) {
+  self.checkKey = function(data, e) {
     if(e.which === 13) {
       self.searchLocation();
       return false;
@@ -118,20 +118,20 @@ function findFunViewModel() {
   };
 
   /* When user clicks "Search" button, invoke searchLocation() */
-  this.processLocationSearch = function() {
+  self.processLocationSearch = function() {
       self.searchLocation();
   };
 
   /* Use google Geocode API to handle valid input locations and invalid input locations */
-  this.searchLocation = function() {
+  self.searchLocation = function() {
     /* Find the events within 30 miles range of the input latitude and longtitude */
     var radius = 30;
 
     /* inputContent is the value of the location input box */
     var inputContent = $("#autocomplete").val();
 
-    var prefix = "https://maps.googleapis.com/maps/api/geocode/json?address="
-    var key = "&key=AIzaSyAcZ0YCAXAZOUoMLUsmId2ZCZ0-p6ggVGc"
+    var prefix = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+    var key = "&key=AIzaSyAcZ0YCAXAZOUoMLUsmId2ZCZ0-p6ggVGc";
     var query = prefix + inputContent + key;
 
     /* Use AJAX call to get the detailed location information of the input location */
@@ -189,7 +189,7 @@ function findFunViewModel() {
   };
 
   /* Search event results using Meetup API */
-  this.searchHelper = function(location) {
+  self.searchHelper = function(location) {
     /* Update search status to be "Searching" */
     self.searchStatus('');
     self.searchStatus('Searching...');
@@ -204,7 +204,7 @@ function findFunViewModel() {
   };
 
   /* Compare search keyword against the event tag of all events. Return a filtered list and markers */
-  this.filterResults = function() {
+  self.filterResults = function() {
     /* Convert filter keyword to lowercase in order to allow the keyword to be case insensitive */
     var searchWord = self.filterKeyword().toLowerCase();
     var array = self.meetupEvents();
@@ -231,7 +231,7 @@ function findFunViewModel() {
   };
 
   /* Clear keyword from filter and show all events in the current location */
-  this.clearFilter = function() {
+  self.clearFilter = function() {
     /* update filteredList to contain all events */
     self.filteredList(self.meetupEvents());
     self.eventStatus(self.numEvents() + ' events found...');
@@ -242,7 +242,7 @@ function findFunViewModel() {
   };
 
   /* toggles the list view of the searching results */
-  this.listToggle = function() {
+  self.listToggle = function() {
     if(self.toggleSymbol() === 'Hide Results') {
       self.toggleSymbol('Show Results');
     } else {
@@ -319,7 +319,7 @@ function findFunViewModel() {
      /* Generate the content for infobox */
       var infoContentString = '<div>' +
       '<p class="infoName">' + value.eventName + '</p>' +
-      '<img src="' + value.eventImg + '" class="infoImg">' +
+      '<img src="' + value.eventImg + '" class="infoImg" alt="Image unable to load">' +
       '<p class="infoContent">' + value.eventAddress + '</p>' +
       '<p class="infoContent">Group: ' + value.eventGroup + '</p>' +
       '<p><a class="infoLink" href="' + value.eventLink + '" target="_blank">Click to view details</a></p>' +
@@ -353,7 +353,7 @@ function findFunViewModel() {
   }
 
   /* When an event on the list is clicked, open the infobox for that event on the map */
-  this.goToMarker = function(clickedEvent) {
+  self.goToMarker = function(clickedEvent) {
     var clickedEventName = clickedEvent.eventName;
     for(var key in self.mapMarkers()) {
       if(clickedEventName === self.mapMarkers()[key].marker.title) {
