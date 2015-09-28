@@ -1,3 +1,11 @@
+/* Use hamburger button to toggle the searchbar's visibility */
+var menu = $('#menu');
+var drawer = $('.searchbar');
+menu.click(function(e) {
+  drawer.toggleClass('open');
+  e.stopPropagation();
+});
+
 var map, city, infobox;
 var inputLan, inputLon, inputLocation;
 

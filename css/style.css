@@ -91,8 +91,8 @@ body {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   position: absolute;
-  top: 170px;  
-  left: 20px;  
+  top: 170px;
+  left: 20px;
   background: rgba(255,255,255, 0.9);
   width: 25%;
   max-height: 100%;
@@ -180,6 +180,10 @@ body {
   font-size: 13px;
 }
 
+.headerMenu {
+  display: none;
+}
+
 @media screen and (max-width: 700px) {
   .searchbar {
     width: 300px;
@@ -203,8 +207,8 @@ body {
   }
 }
 
-@media screen and (max-width: 460px), screen and (max-height: 600px) {
-  .infoContent{
+@media screen and (max-width: 600px), screen and (max-height: 600px) {
+  .infoContent {
     display: none;
   }
 
@@ -224,5 +228,70 @@ body {
 
   #resultsList {
     max-height: 120px;
+  }
+
+  .searchbar {
+    width: 300px;
+    background-color: rgba(255,255,255,0.9);
+    position: absolute;
+    -webkit-transform: translate(-350px, 0);
+    transform: translate(-350px, 0);
+    transition: transform 0.3s ease;
+  }
+
+  .searchbar.open {
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+  }
+
+  .searchbarInput {
+    width: 150px;
+  }
+
+  .headerMenu {
+    position: absolute;
+    top: 20px;
+    right: 15px;
+    display: inline-block;
+    padding: 0 5px 2px 5px;
+    border: 1px solid rgba(0,0,0,.3);
+    background-color: rgba(255,255,255,0.9);
+    color: gray;
+    border-radius: 5px;
+    font-size: 32px;
+  }
+}
+
+@media screen and (max-width: 400px), screen and (max-height: 400px) {
+  .searchbar {
+    left: 5px;
+    top: 5px;
+    width: 250px;
+  }
+
+  .searchbarInput {
+    width: 145px;
+  }
+
+  #submitSearch {
+    width: 50px;
+  }
+
+  #submitFilter {
+    width: 50px;
+  }
+
+  .headerMenu {
+    right: 5px;
+    top: 5px;
+    font-size: 28px;
+  }
+
+  .eventStatus {
+    font-size: 14px;
+  }
+
+  #resultsList {
+    max-height: 85px;
   }
 }
