@@ -6,6 +6,8 @@ menu.click(function(e) {
   e.stopPropagation();
 });
 
+var windowHeight = window.innerHeight;
+var windowWidth = window.innerWidth;
 var map, city, infobox;
 var inputLan, inputLon, inputLocation;
 
@@ -180,7 +182,8 @@ function findFunViewModel() {
           self.searchHelper(location);
         } else {
           /* If the input location is invalid (for example, 'abcdefghij'), the Google Geocode API can't find any result for the input location.
-           * Update the search status and let user enter a valid address. */
+           * Update the search status and let user enter a valid address. 
+           */
           self.searchStatus('Wrong address! Please enter a city and state...');
           self.eventStatus('');
 
@@ -347,6 +350,11 @@ function findFunViewModel() {
 
       /* generate infobox for each event */
       google.maps.event.addListener(marker, 'click', function() {
+        /* For small device, when an infobox is open, the search bar will back into the Hamburger Menu */
+        if(windowHeight <= 600 || windowWidth <= 600) {
+            drawer.removeClass('open');
+        } 
+
         infobox.setContent(infoContentString);
         map.setZoom(12);
         map.setCenter(marker.position);
@@ -365,9 +373,13 @@ function findFunViewModel() {
     var clickedEventName = clickedEvent.eventName;
     for(var key in self.mapMarkers()) {
       if(clickedEventName === self.mapMarkers()[key].marker.title) {
-          console.log("click");
+        /* For small device, when an infobox is open, the search bar will back into the Hamburger Menu */
+        if(windowHeight <= 600 || windowWidth <= 600) {
+            drawer.removeClass('open');
+        }
+
         map.panTo(self.mapMarkers()[key].marker.position);
-        map.setZoom(14);
+        map.setZoom(12);
         infobox.setContent(self.mapMarkers()[key].content);
         infobox.open(map, self.mapMarkers()[key].marker);
         map.panBy(0, 150);
